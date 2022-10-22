@@ -6,7 +6,7 @@ const hasEvergreensLink = node =>
     node.children[0] && node.children[0].name?.startsWith('[[bfSDi8a9U]]');
 
 // Read file and parse as a JS object
-let file = JSON.parse(fs.readFileSync('./datasets/TanaIntermediate.json'));
+const file = JSON.parse(fs.readFileSync('./datasets/TanaIntermediate.json'));
 
 /**
  * uidLinksToReplace is an array of pairs in the form [["A", "B"], ["A", "B"]],
@@ -28,14 +28,14 @@ const removeIdFromRefs = (child, id) => {
     }
 };
 
-const recursiveFindNameByUid = (nodes, branchLinkName) => {
+const recursiveFindNameByUid = (nodes, uidToMatch, branchLinkName) => {
     if (!Array.isArray(nodes)) return;
     for (const child of nodes) {
         if (child.uid === uidToMatch) {
             const newName = child.name;
             uidLinksToReplace.push([branchLinkName, newName]);
         } else if (child.children && child.children.length > 0) {
-            recursiveFindNameByUid(child.children);
+            recursiveFindNameByUid(child.children, uidToMatch, branchLinkName);
         }
     }
 };
@@ -83,14 +83,16 @@ for (const node of file.nodes) {
                 // replace every linked uid — the branch child's original name that looks something
                 // like "[[oij_lijSDFJI]]" — in the file with the new name.
                 for (const node2 of file.nodes) {
-                    recursiveFindNameByUid(node2.children, branchChild.name);
+                    recursiveFindNameByUid(node2.children, uidToMatch, branchChild.name);
                 }
             }
         }
     }
 }
 
-const fileString = JSON.stringify(file);
+console.log('replacements', uidLinksToReplace.length);
+
+let fileString = JSON.stringify(file);
 /**
  * Replace uid links with the names of the nodes that match that uid.
  * e.g. "[[oij_lijSDFJI]]" -> "How to bin friends and influence sheeple"
@@ -109,4 +111,4 @@ uidLinksToReplace.forEach(arr => {
 //     file = JSON.parse(JSON.stringify(file).replace(arr[0], arr[1]));
 // });
 
-fs.writeFileSync('./outputs/crazyReplaceNoField.json', fileString);
+fs.writeFileSync('./outputs/refactored.json', fileString);
