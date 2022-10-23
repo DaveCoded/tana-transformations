@@ -2,6 +2,13 @@ const fs = require('fs');
 
 // Read file and parse as a JS object
 const file = JSON.parse(fs.readFileSync('./datasets/TanaIntermediate.json'));
+file = trimObj(file);
+
+file.attributes.push({
+    name: 'Branches',
+    values: [],
+    count: 0
+});
 
 // For storing pairs of strings in the form: [["[[some_uid_in_brackets]]", "Name to replace it with"]]
 const uidLinksToReplace = [];
@@ -113,4 +120,18 @@ function recursiveFindNameByUid(nodes, uidToMatch, branchLinkName) {
             recursiveFindNameByUid(child.children, uidToMatch, branchLinkName);
         }
     }
+}
+
+/**
+ * Trim all the values of a deeply nested object. Returns a new object.
+ */
+function trimObj(obj) {
+    if (!Array.isArray(obj) && typeof obj != 'object') return obj;
+    return Object.keys(obj).reduce(
+        function (acc, key) {
+            acc[key] = typeof obj[key] == 'string' ? obj[key].trim() : trimObj(obj[key]);
+            return acc;
+        },
+        Array.isArray(obj) ? [] : {}
+    );
 }
