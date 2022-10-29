@@ -1,0 +1,23 @@
+{
+  "name": "tana-transformations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "transform-books.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DaveCoded/tana-transformations.git"
+  },
+  "keywords": [],
+  "author": "Dave Bernhard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DaveCoded/tana-transformations/issues"
+  },
+  "homepage": "https://github.com/DaveCoded/tana-transformations#readme",
+  "dependencies": {
+    "uid": "^2.0.1"
+  }
+}
